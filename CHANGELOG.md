@@ -13,6 +13,14 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Serviços isolados para execução dos testes com PostgreSQL temporário em `tmpfs`.
 - Configuração do PHPUnit protegida contra o uso acidental do banco de desenvolvimento.
 - Health check da aplicação disponível em `/up`.
+- API REST versionada para cadastro, consulta, listagem, alteração, ativação, inativação, exclusão lógica, restauração e exclusão definitiva de empresas.
+- Arquitetura DDD em `src/`, separando Domain, Application, Infrastructure e Presentation.
+- Objetos de valor e validadores para CNPJ, e-mail e telefone.
+- Respostas JSON padronizadas e catálogo reutilizável de mensagens genéricas.
+- Filtros de empresas por nome, status e situação de exclusão, com paginação.
+- Contrato OpenAPI 3.1 e serviço Swagger UI.
+- Testes unitários de domínio e casos de uso da feature de empresas.
+- Testes de integração da API utilizando o banco PostgreSQL isolado.
 
 ### Changed
 
@@ -22,6 +30,8 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Aplicação configurada para carregar exclusivamente rotas de API e console.
 - Respostas de exceção configuradas para utilizar JSON em todas as rotas.
 - Configuração do Docker centralizada no `.env` da raiz, sem credenciais ou endereços fixos no Compose e no PHPUnit.
+- Autoload PSR-4 configurado para as camadas da aplicação em `src/`.
+- Imagem PHP preparada com a extensão `mbstring` para validação segura de texto Unicode.
 
 ### Removed
 
