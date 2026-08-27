@@ -2,15 +2,30 @@
 
 use Illuminate\Support\Facades\Route;
 use Presentation\Http\Controllers\Api\V1\CompanyController;
+use Presentation\Http\Controllers\Api\V1\ProductController;
 
 Route::prefix('v1')->group(function (): void {
-    Route::get('companies', [CompanyController::class, 'index']);
-    Route::post('companies', [CompanyController::class, 'store']);
-    Route::get('companies/{company}', [CompanyController::class, 'show'])->whereNumber('company');
-    Route::put('companies/{company}', [CompanyController::class, 'update'])->whereNumber('company');
-    Route::patch('companies/{company}/activate', [CompanyController::class, 'activate'])->whereNumber('company');
-    Route::patch('companies/{company}/deactivate', [CompanyController::class, 'deactivate'])->whereNumber('company');
-    Route::delete('companies/{company}', [CompanyController::class, 'destroy'])->whereNumber('company');
-    Route::post('companies/{company}/restore', [CompanyController::class, 'restore'])->whereNumber('company');
-    Route::delete('companies/{company}/force', [CompanyController::class, 'forceDestroy'])->whereNumber('company');
+    Route::prefix('companies')->controller(CompanyController::class)->group(function (): void {
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::get('/{company}', 'show')->whereNumber('company');
+        Route::put('/{company}', 'update')->whereNumber('company');
+        Route::patch('/{company}/activate', 'activate')->whereNumber('company');
+        Route::patch('/{company}/deactivate', 'deactivate')->whereNumber('company');
+        Route::delete('/{company}', 'destroy')->whereNumber('company');
+        Route::post('/{company}/restore', 'restore')->whereNumber('company');
+        Route::delete('/{company}/force', 'forceDestroy')->whereNumber('company');
+    });
+
+    Route::prefix('products')->controller(ProductController::class)->group(function (): void {
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::get('/{product}', 'show')->whereNumber('product');
+        Route::put('/{product}', 'update')->whereNumber('product');
+        Route::patch('/{product}/activate', 'activate')->whereNumber('product');
+        Route::patch('/{product}/deactivate', 'deactivate')->whereNumber('product');
+        Route::delete('/{product}', 'destroy')->whereNumber('product');
+        Route::post('/{product}/restore', 'restore')->whereNumber('product');
+        Route::delete('/{product}/force', 'forceDestroy')->whereNumber('product');
+    });
 });

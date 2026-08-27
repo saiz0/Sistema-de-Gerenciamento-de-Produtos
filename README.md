@@ -70,6 +70,14 @@ Execute as migrations no banco de desenvolvimento:
 docker compose exec backend php artisan migrate
 ```
 
+### Dados de demonstração
+
+O seeder principal cadastra 10 empresas ativas e 100 produtos ativos para cada uma, totalizando 1.000 produtos. Os dados são determinísticos e podem ser atualizados sem gerar duplicidades:
+
+```bash
+docker compose exec backend php artisan db:seed
+```
+
 Quando o mapeamento de namespaces do Composer for alterado, atualize o autoload:
 
 ```bash
@@ -86,6 +94,12 @@ docker compose --profile test run --rm backend-test
 
 Os testes unitários exercitam domínio e casos de uso sem banco de dados. Os testes de integração executam as rotas HTTP e migrations contra o serviço temporário `postgres-test`.
 
+### Integração contínua
+
+O workflow `CI Backend` é executado em pushes para branches de feature, `develop` e `main`, além de pull requests para `develop` e `main`. Ele valida o Docker Compose e o contrato OpenAPI, executa a suíte completa com PostgreSQL temporário e confirma a construção da imagem de produção.
+
+O workflow utiliza somente os arquivos `.env.example`. Nenhuma credencial do ambiente local ou segredo de produção é necessário para executar os testes.
+
 ## API de empresas
 
 | Método | Endpoint | Operação |
@@ -101,6 +115,22 @@ Os testes unitários exercitam domínio e casos de uso sem banco de dados. Os te
 | `DELETE` | `/api/v1/companies/{id}/force` | Excluir definitivamente |
 
 As respostas seguem um envelope JSON comum com `success`, `message` e, conforme o resultado, `data`, `meta`, `code` e `errors`.
+
+## API de produtos
+
+| Método | Endpoint | Operação |
+|---|---|---|
+| `GET` | `/api/v1/products` | Listar e filtrar produtos |
+| `POST` | `/api/v1/products` | Cadastrar produto |
+| `GET` | `/api/v1/products/{id}` | Consultar produto |
+| `PUT` | `/api/v1/products/{id}` | Atualizar dados do produto |
+| `PATCH` | `/api/v1/products/{id}/activate` | Ativar produto |
+| `PATCH` | `/api/v1/products/{id}/deactivate` | Inativar produto |
+| `DELETE` | `/api/v1/products/{id}` | Excluir logicamente |
+| `POST` | `/api/v1/products/{id}/restore` | Restaurar produto |
+| `DELETE` | `/api/v1/products/{id}/force` | Excluir definitivamente |
+
+A listagem aceita filtros por nome, status, empresa e situação de exclusão, além de paginação. Os corpos das requisições, exemplos de resposta e possíveis erros estão descritos no Swagger.
 
 ### Encerrar os serviços
 

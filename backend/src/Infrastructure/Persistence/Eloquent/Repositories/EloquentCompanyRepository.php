@@ -85,6 +85,11 @@ final class EloquentCompanyRepository implements CompanyRepository
         return $this->uniqueQuery($ignoreId)->where('cnpj', $cnpj->value())->exists();
     }
 
+    public function existsByEmail(EmailAddress $email, ?int $ignoreId = null): bool
+    {
+        return $this->uniqueQuery($ignoreId)->where('email', $email->value())->exists();
+    }
+
     public function softDelete(int $id): void
     {
         CompanyModel::query()->findOrFail($id)->delete();

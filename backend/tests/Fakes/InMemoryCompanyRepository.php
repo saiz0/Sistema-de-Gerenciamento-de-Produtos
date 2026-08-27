@@ -11,6 +11,7 @@ use Domain\Company\Enums\CompanyStatus;
 use Domain\Company\Enums\DeletedFilter;
 use Domain\Company\Repositories\CompanyRepository;
 use Domain\Company\ValueObjects\Cnpj;
+use Domain\Company\ValueObjects\EmailAddress;
 
 final class InMemoryCompanyRepository implements CompanyRepository
 {
@@ -71,6 +72,11 @@ final class InMemoryCompanyRepository implements CompanyRepository
     public function existsByCnpj(Cnpj $cnpj, ?int $ignoreId = null): bool
     {
         return $this->exists(fn (Company $company) => $company->cnpj()->value() === $cnpj->value(), $ignoreId);
+    }
+
+    public function existsByEmail(EmailAddress $email, ?int $ignoreId = null): bool
+    {
+        return $this->exists(fn (Company $company) => $company->email()->value() === $email->value(), $ignoreId);
     }
 
     public function softDelete(int $id): void

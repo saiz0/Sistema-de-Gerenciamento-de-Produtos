@@ -40,6 +40,7 @@ final class CompanyApiTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonPath('success', false)
             ->assertJsonPath('code', 'VALIDATION_ERROR')
+            ->assertJsonPath('errors.name.0', 'O campo nome deve ter pelo menos 3 caracteres.')
             ->assertJsonStructure(['errors' => ['name', 'cnpj', 'email', 'phone']]);
     }
 
@@ -49,6 +50,20 @@ final class CompanyApiTest extends TestCase
         $this->deleteJson("/api/v1/companies/{$id}")->assertOk();
 
         $this->postJson('/api/v1/companies', $this->payload('outra@exemplo.com'))
+            ->assertConflict()
+            ->assertJsonPath('code', 'COMPANY_CONFLICT');
+    }
+
+    public function test_keeps_email_unique_even_after_soft_delete(): void
+    {
+        $id = $this->postJson('/api/v1/companies', $this->payload())->json('data.id');
+        $this->deleteJson("/api/v1/companies/{$id}")->assertOk();
+
+        $this->postJson('/api/v1/companies', $this->payload(
+            email: 'CONTATO@EXEMPLO.COM',
+            cnpj: '11444777000161',
+            name: 'Outra Empresa',
+        ))
             ->assertConflict()
             ->assertJsonPath('code', 'COMPANY_CONFLICT');
     }
@@ -90,6 +105,28 @@ final class CompanyApiTest extends TestCase
             ->assertJsonPath('data.name', 'Empresa Atualizada')
             ->assertJsonPath('data.email', 'novo@exemplo.com')
             ->assertJsonPath('data.status', 'inactive');
+    }
+
+    public function test_rejects_duplicate_cnpj_and_email_when_updating_company(): void
+    {
+        $this->postJson('/api/v1/companies', $this->payload())->assertCreated();
+        $secondId = $this->postJson('/api/v1/companies', $this->payload(
+            email: 'segunda@exemplo.com',
+            cnpj: '11444777000161',
+            name: 'Segunda Empresa',
+        ))->assertCreated()->json('data.id');
+
+        $this->putJson("/api/v1/companies/{$secondId}", $this->payload(
+            email: 'segunda@exemplo.com',
+            cnpj: '11222333000181',
+            name: 'Segunda Empresa',
+        ))->assertConflict();
+
+        $this->putJson("/api/v1/companies/{$secondId}", $this->payload(
+            email: 'CONTATO@EXEMPLO.COM',
+            cnpj: '11444777000161',
+            name: 'Segunda Empresa',
+        ))->assertConflict();
     }
 
     public function test_soft_deletes_lists_and_restores_a_company(): void

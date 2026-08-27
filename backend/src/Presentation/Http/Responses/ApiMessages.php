@@ -15,6 +15,7 @@ final class ApiMessages
     public const VALIDATION_ERROR = 'Os dados informados são inválidos.';
     public const NOT_FOUND = 'Registro não encontrado.';
     public const CONFLICT = 'A operação não pôde ser concluída.';
+    public const METHOD_NOT_ALLOWED = 'Método não permitido para esta rota.';
     public const INTERNAL_ERROR = 'Ocorreu um erro interno.';
 
     private function __construct() {}
