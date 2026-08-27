@@ -18,11 +18,16 @@ RUN pnpm install --frozen-lockfile
 
 FROM dependencies AS development
 
+COPY docker/development-entrypoint.sh /usr/local/bin/frontend-entrypoint
+
+RUN sed -i 's/\r$//' /usr/local/bin/frontend-entrypoint \
+    && chmod +x /usr/local/bin/frontend-entrypoint
+
 COPY . .
 
 EXPOSE 5173
 
-CMD ["pnpm", "dev", "--host=0.0.0.0"]
+CMD ["frontend-entrypoint"]
 
 
 FROM dependencies AS build

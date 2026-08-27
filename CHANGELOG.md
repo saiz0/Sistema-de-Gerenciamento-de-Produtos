@@ -29,6 +29,11 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Mensagens de validação do Laravel em português do Brasil.
 - Workflow de integração contínua para testes unitários e de integração com PostgreSQL isolado.
 - Seeders idempotentes com 10 empresas e 100 produtos por empresa para demonstração e desenvolvimento.
+- Aplicação frontend em Vue 3, TypeScript e Vite.
+- Serviço Docker para desenvolvimento do frontend com atualização automática.
+- Sincronização automática das dependências do frontend ao iniciar o container de desenvolvimento.
+- Imagem multiestágio do frontend para dependências, desenvolvimento, build e produção com Nginx.
+- Estrutura inicial de estilos externos com tokens visuais, normalização e estilos por componente.
 
 ### Changed
 
@@ -47,7 +52,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 
 ### Removed
 
-- Vite, NPM e arquivos de configuração do frontend.
+- Vite, NPM e arquivos de frontend do esqueleto interno do Laravel.
 - Assets CSS e JavaScript do esqueleto Laravel.
 - View de boas-vindas e arquivo de rotas web.
 - Comandos de instalação e build do frontend no `composer.json`.

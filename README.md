@@ -1,13 +1,16 @@
 # Sistema de Gerenciamento de Produtos
 
-Backend para cadastro e manutenção de empresas fornecedoras e seus respectivos produtos.
+Sistema para cadastro e manutenção de empresas fornecedoras e seus respectivos produtos.
 
-A aplicação utiliza o Laravel somente como API. O frontend é mantido fora deste projeto e não existem dependências de Node.js, NPM ou Vite.
+O backend utiliza o Laravel exclusivamente como API e o frontend utiliza Vue. Todo o ambiente de desenvolvimento é executado pelo Docker Compose, sem exigir PHP, Composer, Node.js ou pnpm instalados na máquina.
 
 ## Tecnologias
 
 - PHP 8.4;
 - Laravel 13;
+- Vue 3;
+- TypeScript 6;
+- Vite 8;
 - PostgreSQL 17;
 - Docker e Docker Compose;
 - Composer 2;
@@ -18,6 +21,7 @@ A aplicação utiliza o Laravel somente como API. O frontend é mantido fora des
 
 | Serviço | Finalidade |
 |---|---|
+| `frontend` | Aplicação Vue com atualização automática na porta `5173` |
 | `backend` | Aplicação Laravel disponível na porta `8000` |
 | `postgres` | Banco de desenvolvimento com dados persistentes |
 | `backend-test` | Execução isolada da suíte de testes |
@@ -40,7 +44,13 @@ Revise as portas e credenciais locais no `.env`. Depois, com Docker instalado, e
 docker compose up -d --build
 ```
 
-A aplicação ficará disponível em:
+A interface ficará disponível em:
+
+```text
+http://localhost:5173
+```
+
+A API ficará disponível em:
 
 ```text
 http://localhost:8000
@@ -61,6 +71,23 @@ http://localhost:8081
 O contrato OpenAPI versionado está em `backend/docs/openapi.yaml`.
 
 As rotas da aplicação são registradas em `backend/routes/api.php` e recebem automaticamente o prefixo `/api`. Requisições para rotas inexistentes retornam erro em JSON.
+
+### Frontend
+
+O container instala as dependências durante a construção da imagem, mantém `node_modules` em um volume próprio e sincroniza o lockfile ao iniciar. Os comandos do frontend devem ser executados dentro do serviço:
+
+```bash
+docker compose exec frontend pnpm type-check
+docker compose exec frontend pnpm build
+```
+
+Depois de alterar as dependências, reinicie o serviço para sincronizar o volume:
+
+```bash
+docker compose restart frontend
+```
+
+Não é necessário executar `pnpm install` na máquina.
 
 ### Migrations
 
@@ -159,6 +186,11 @@ Esse comando preserva o volume do banco de desenvolvimento.
 │   │   └── Presentation/ # Controllers, requests, validação e respostas
 │   ├── tests/
 │   └── README.md         # Decisões de arquitetura do backend
+├── frontend/             # Aplicação Vue
+│   ├── nginx/            # Servidor da imagem de produção
+│   ├── src/              # Código-fonte da interface
+│   ├── Dockerfile        # Estágios de desenvolvimento, build e produção
+│   └── README.md         # Execução e organização do frontend
 ├── compose.yaml
 ├── CHANGELOG.md
 └── README.md
