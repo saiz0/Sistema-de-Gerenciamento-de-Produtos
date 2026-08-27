@@ -27,6 +27,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Regras transacionais de inativação, exclusão e restauração em cascata entre empresas e produtos.
 - Testes unitários e de integração para produtos e para o ciclo de vida conjunto com empresas.
 - Mensagens de validação do Laravel em português do Brasil.
+- Workflow de integração contínua para testes unitários e de integração com PostgreSQL isolado.
 
 ### Changed
 
@@ -41,6 +42,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Contrato OpenAPI ampliado com todos os endpoints e schemas de produtos.
 - Unicidade de e-mail das empresas garantida inclusive entre registros excluídos logicamente.
 - Respostas inesperadas protegidas contra exposição de SQL, stack trace e detalhes internos.
+- Pipeline configurado para validar Docker Compose, contrato OpenAPI e construção da imagem de produção.
 
 ### Removed
 

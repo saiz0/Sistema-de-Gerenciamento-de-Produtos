@@ -86,6 +86,12 @@ docker compose --profile test run --rm backend-test
 
 Os testes unitários exercitam domínio e casos de uso sem banco de dados. Os testes de integração executam as rotas HTTP e migrations contra o serviço temporário `postgres-test`.
 
+### Integração contínua
+
+O workflow `CI Backend` é executado em pushes para branches de feature, `develop` e `main`, além de pull requests para `develop` e `main`. Ele valida o Docker Compose e o contrato OpenAPI, executa a suíte completa com PostgreSQL temporário e confirma a construção da imagem de produção.
+
+O workflow utiliza somente os arquivos `.env.example`. Nenhuma credencial do ambiente local ou segredo de produção é necessário para executar os testes.
+
 ## API de empresas
 
 | Método | Endpoint | Operação |
