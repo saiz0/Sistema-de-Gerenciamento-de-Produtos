@@ -58,11 +58,14 @@ Artisan e Composer são executados pelo serviço `backend`:
 ```bash
 docker compose exec backend php artisan route:list
 docker compose exec backend php artisan migrate:status
+docker compose exec backend php artisan db:seed
 docker compose exec backend composer install
 docker compose exec backend composer dump-autoload
 ```
 
 Após alterar os namespaces PSR-4 do `composer.json`, execute `composer dump-autoload` dentro do container. Depois de alterar dependências ou extensões PHP, reconstrua a imagem com `docker compose up -d --build`.
+
+O comando `db:seed` cadastra uma massa determinística com 10 empresas e 100 produtos por empresa. Ele pode ser executado novamente para atualizar essa massa sem duplicá-la.
 
 ### Testes
 

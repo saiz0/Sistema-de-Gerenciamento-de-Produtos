@@ -28,6 +28,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Testes unitários e de integração para produtos e para o ciclo de vida conjunto com empresas.
 - Mensagens de validação do Laravel em português do Brasil.
 - Workflow de integração contínua para testes unitários e de integração com PostgreSQL isolado.
+- Seeders idempotentes com 10 empresas e 100 produtos por empresa para demonstração e desenvolvimento.
 
 ### Changed
 

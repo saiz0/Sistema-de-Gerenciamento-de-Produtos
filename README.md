@@ -70,6 +70,14 @@ Execute as migrations no banco de desenvolvimento:
 docker compose exec backend php artisan migrate
 ```
 
+### Dados de demonstração
+
+O seeder principal cadastra 10 empresas ativas e 100 produtos ativos para cada uma, totalizando 1.000 produtos. Os dados são determinísticos e podem ser atualizados sem gerar duplicidades:
+
+```bash
+docker compose exec backend php artisan db:seed
+```
+
 Quando o mapeamento de namespaces do Composer for alterado, atualize o autoload:
 
 ```bash
