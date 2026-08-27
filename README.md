@@ -1,6 +1,99 @@
 # Sistema de Gerenciamento de Produtos
 
-Sistema para cadastro e manutenção de empresas fornecedoras e seus respectivos produtos.
+Backend para cadastro e manutenção de empresas fornecedoras e seus respectivos produtos.
+
+A aplicação utiliza o Laravel somente como API. O frontend é mantido fora deste projeto e não existem dependências de Node.js, NPM ou Vite.
+
+## Tecnologias
+
+- PHP 8.4;
+- Laravel 13;
+- PostgreSQL 17;
+- Docker e Docker Compose;
+- Composer 2;
+- PHPUnit 12.
+
+## Serviços Docker
+
+| Serviço | Finalidade |
+|---|---|
+| `backend` | Aplicação Laravel disponível na porta `8000` |
+| `postgres` | Banco de desenvolvimento com dados persistentes |
+| `backend-test` | Execução isolada da suíte de testes |
+| `postgres-test` | Banco temporário usado exclusivamente pelos testes |
+
+O banco de desenvolvimento utiliza um volume persistente. O banco de testes utiliza `tmpfs` e é descartado ao encerrar o container.
+
+## Execução
+
+Crie o arquivo de configuração do Docker a partir do exemplo:
+
+```bash
+cp .env.example .env
+```
+
+Revise as portas e credenciais locais no `.env`. Depois, com Docker instalado, execute na raiz do projeto:
+
+```bash
+docker compose up -d --build
+```
+
+A aplicação ficará disponível em:
+
+```text
+http://localhost:8000
+```
+
+O health check pode ser consultado em:
+
+```text
+http://localhost:8000/up
+```
+
+As rotas da aplicação são registradas em `backend/routes/api.php` e recebem automaticamente o prefixo `/api`. Requisições para rotas inexistentes retornam erro em JSON.
+
+### Migrations
+
+Execute as migrations no banco de desenvolvimento:
+
+```bash
+docker compose exec backend php artisan migrate
+```
+
+### Testes
+
+A suíte utiliza uma instância separada do PostgreSQL. A conexão de testes é fornecida ao container pelas variáveis `TEST_DB_*` do `.env` da raiz.
+
+```bash
+docker compose --profile test run --rm backend-test
+```
+
+### Encerrar os serviços
+
+```bash
+docker compose down
+```
+
+Esse comando preserva o volume do banco de desenvolvimento.
+
+## Estrutura
+
+```text
+.
+├── backend/              # Aplicação Laravel
+│   ├── docker/           # Inicialização do container
+│   ├── app/
+│   ├── database/
+│   ├── routes/
+│   │   ├── api.php       # Rotas HTTP da API
+│   │   └── console.php   # Comandos Artisan
+│   └── tests/
+├── compose.yaml
+├── CHANGELOG.md
+└── README.md
+```
+
+O Dockerfile possui alvos separados para desenvolvimento e produção. A imagem de desenvolvimento inclui Composer e dependências de teste; a imagem de produção não inclui Composer nem dependências de desenvolvimento.
 
 ## Regras de negócio
 
