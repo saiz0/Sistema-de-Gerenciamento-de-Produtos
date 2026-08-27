@@ -1,4 +1,4 @@
-import { isValidCnpj, isValidEmail, isValidPhone, lengthBetween, required, type FieldErrors } from '../../../shared/validation/validators'
+import { isValidCnpj, isValidEmail, isValidPhone, lengthBetween, required, type FieldErrors } from '../../../shared/validation/validators.ts'
 import type { CompanyPayload } from './types'
 
 type CompanyField = 'name' | 'cnpj' | 'email' | 'phone' | 'status'

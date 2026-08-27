@@ -1,4 +1,4 @@
-import { isValidPrice, lengthBetween, maxLength, required, type FieldErrors } from '../../../shared/validation/validators'
+import { isValidPrice, lengthBetween, maxLength, required, type FieldErrors } from '../../../shared/validation/validators.ts'
 import type { ProductPayload } from './types'
 
 type ProductField = 'company_id' | 'name' | 'description' | 'price' | 'internal_code' | 'status'

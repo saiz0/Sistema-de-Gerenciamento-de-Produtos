@@ -1,4 +1,4 @@
-import type { ApiErrorBody } from './types'
+import type { ApiErrorBody } from './types.ts'
 
 const DEFAULT_MESSAGE = 'Não foi possível concluir a operação. Tente novamente.'
 

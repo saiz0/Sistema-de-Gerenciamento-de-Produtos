@@ -40,6 +40,13 @@ COPY . .
 RUN pnpm build
 
 
+FROM development AS test
+
+RUN pnpm type-check \
+    && pnpm test \
+    && pnpm build
+
+
 FROM ${NGINX_IMAGE} AS production
 
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf

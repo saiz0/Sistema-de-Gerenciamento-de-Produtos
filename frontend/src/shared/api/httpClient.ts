@@ -1,5 +1,5 @@
-import { ApiError } from './ApiError'
-import type { ApiErrorBody } from './types'
+import { ApiError } from './ApiError.ts'
+import type { ApiErrorBody } from './types.ts'
 
 type QueryValue = string | number | boolean | null | undefined
 
@@ -17,7 +17,11 @@ function buildQuery(query?: object): string {
 }
 
 export class HttpClient {
-  constructor(private readonly baseUrl: string) {}
+  private readonly baseUrl: string
+
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl
+  }
 
   get<T>(path: string, query?: object): Promise<T> {
     return this.request<T>(`${path}${buildQuery(query)}`)
@@ -70,6 +74,6 @@ export class HttpClient {
   }
 }
 
-const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'
+const configuredBaseUrl = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'
 
 export const httpClient = new HttpClient(configuredBaseUrl.replace(/\/$/, ''))
