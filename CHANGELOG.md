@@ -34,6 +34,15 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Sincronização automática das dependências do frontend ao iniciar o container de desenvolvimento.
 - Imagem multiestágio do frontend para dependências, desenvolvimento, build e produção com Nginx.
 - Estrutura inicial de estilos externos com tokens visuais, normalização e estilos por componente.
+- Interface responsiva em Atomic Design para gerenciamento completo de empresas e produtos.
+- Filtros, paginação e acesso explícito a registros excluídos no frontend.
+- Formulários com validações locais e associação de erros da API aos campos correspondentes.
+- Políticas de interface para exibir ações somente quando permitidas pelas regras de negócio.
+- Feedback visual de carregamento, sucesso, erro, listagem vazia e página não encontrada.
+- Confirmações com avisos específicos para operações em cascata e exclusões irreversíveis.
+- Testes unitários e de integração do frontend executados no Docker.
+- Workflow de integração contínua para tipagem, testes e imagem de produção do frontend.
+- Logotipo e identidade visual Horizon aplicados ao cabeçalho da interface.
 
 ### Changed
 
@@ -49,6 +58,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Unicidade de e-mail das empresas garantida inclusive entre registros excluídos logicamente.
 - Respostas inesperadas protegidas contra exposição de SQL, stack trace e detalhes internos.
 - Pipeline configurado para validar Docker Compose, contrato OpenAPI e construção da imagem de produção.
+- Status operacional e exclusão lógica apresentados como dimensões independentes na interface.
 
 ### Removed
 

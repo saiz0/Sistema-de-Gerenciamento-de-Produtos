@@ -22,6 +22,7 @@ O backend utiliza o Laravel exclusivamente como API e o frontend utiliza Vue. To
 | Serviço | Finalidade |
 |---|---|
 | `frontend` | Aplicação Vue com atualização automática na porta `5173` |
+| `frontend-test` | Tipagem, testes unitários, testes de integração e build do frontend |
 | `backend` | Aplicação Laravel disponível na porta `8000` |
 | `postgres` | Banco de desenvolvimento com dados persistentes |
 | `backend-test` | Execução isolada da suíte de testes |
@@ -78,6 +79,7 @@ O container instala as dependências durante a construção da imagem, mantém `
 
 ```bash
 docker compose exec frontend pnpm type-check
+docker compose exec frontend pnpm test
 docker compose exec frontend pnpm build
 ```
 
@@ -121,11 +123,31 @@ docker compose --profile test run --rm backend-test
 
 Os testes unitários exercitam domínio e casos de uso sem banco de dados. Os testes de integração executam as rotas HTTP e migrations contra o serviço temporário `postgres-test`.
 
+O frontend possui testes unitários para validações e políticas de ações, além de testes de integração do cliente HTTP. Toda a verificação é executada em um estágio isolado da imagem:
+
+```bash
+docker compose --profile test build frontend-test
+```
+
 ### Integração contínua
 
-O workflow `CI Backend` é executado em pushes para branches de feature, `develop` e `main`, além de pull requests para `develop` e `main`. Ele valida o Docker Compose e o contrato OpenAPI, executa a suíte completa com PostgreSQL temporário e confirma a construção da imagem de produção.
+Os workflows `CI Backend` e `CI Frontend` são executados em pushes para branches de feature, `develop` e `main`, além de pull requests para `develop` e `main`. Eles validam o Docker Compose, contrato OpenAPI, tipagem, testes, builds e imagens de produção.
 
 O workflow utiliza somente os arquivos `.env.example`. Nenhuma credencial do ambiente local ou segredo de produção é necessário para executar os testes.
+
+## Interface
+
+A interface oferece fluxos completos para empresas e produtos:
+
+- Listagens paginadas com filtros por nome, status e situação de exclusão.
+- Filtro de produtos por empresa.
+- Cadastro e edição com validações nos campos e mensagens da API.
+- Indicação independente de status ativo/inativo e exclusão lógica.
+- Ações exibidas somente quando permitidas pelas regras de negócio.
+- Confirmações específicas para inativação em cascata, exclusão lógica e exclusão definitiva.
+- Atualização automática das listagens e feedback de sucesso ou erro após as operações.
+- Estados de carregamento, listagem vazia, falha de comunicação e página não encontrada.
+- Layout responsivo e navegação por teclado com foco visível.
 
 ## API de empresas
 
