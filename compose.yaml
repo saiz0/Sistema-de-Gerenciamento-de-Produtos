@@ -1,4 +1,13 @@
 services:
+  swagger:
+    image: ${SWAGGER_UI_IMAGE:?SWAGGER_UI_IMAGE must be set}
+    ports:
+      - "${SWAGGER_PORT:?SWAGGER_PORT must be set}:8080"
+    environment:
+      SWAGGER_JSON: /docs/openapi.yaml
+    volumes:
+      - ./backend/docs:/docs:ro
+
   backend:
     build:
       context: ./backend
