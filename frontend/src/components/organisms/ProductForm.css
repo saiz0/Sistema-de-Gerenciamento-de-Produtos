@@ -1,0 +1,4 @@
+.product-form { display: grid; gap: var(--space-xl); padding: var(--space-lg); border: 0.0625rem solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-default); box-shadow: var(--shadow-sm); }
+.product-form__actions { display: flex; gap: var(--space-sm); justify-content: flex-end; }
+.product-form__cancel { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.625rem 1rem; border: 0.0625rem solid var(--color-border-strong); border-radius: var(--radius-sm); font-weight: var(--font-weight-bold); text-decoration: none; }
+@media (max-width: 32rem) { .product-form__actions { flex-direction: column-reverse; } .product-form__actions > * { inline-size: 100%; } }
