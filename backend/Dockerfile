@@ -29,17 +29,20 @@ RUN apk add --no-cache \
         icu-libs \
         libpq \
         libzip \
+        oniguruma \
         sqlite-libs \
         su-exec \
     && apk add --no-cache --virtual .build-deps \
         $PHPIZE_DEPS \
         icu-dev \
         libzip-dev \
+        oniguruma-dev \
         postgresql-dev \
         sqlite-dev \
     && docker-php-ext-install -j"$(nproc)" \
         bcmath \
         intl \
+        mbstring \
         opcache \
         pdo_pgsql \
         pdo_sqlite \
