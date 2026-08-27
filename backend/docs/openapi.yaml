@@ -363,7 +363,7 @@ components:
           pattern: '^\d+(?:[\.,]\d{1,2})?$'
           example: '249.90'
           description: Valor maior que zero, com no máximo duas casas decimais. Aceita ponto ou vírgula.
-        internal_code: { type: string, maxLength: 100, example: TEC-001, description: Único dentro da empresa, inclusive entre produtos excluídos. }
+        internal_code: { type: string, maxLength: 100, example: TEC-001, description: 'Único dentro da empresa, inclusive entre produtos excluídos.' }
         status: { $ref: '#/components/schemas/ProductStatus' }
     UpdateProduct:
       type: object
