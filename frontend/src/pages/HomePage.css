@@ -1,8 +1,9 @@
 .home-page {
   display: grid;
-  gap: var(--space-md);
-  max-inline-size: var(--size-reading-max);
+  gap: var(--space-xl);
 }
+
+.home-page__intro { display: grid; gap: var(--space-md); max-inline-size: var(--size-reading-max); }
 
 .home-page__eyebrow {
   color: var(--color-text-muted);
@@ -16,3 +17,10 @@
   color: var(--color-text-muted);
   font-size: var(--font-size-lg);
 }
+
+.home-page__cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); }
+.home-page__cards a { display: grid; gap: var(--space-sm); min-block-size: 9rem; padding: var(--space-lg); border: 0.0625rem solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-default); box-shadow: var(--shadow-sm); text-decoration: none; transition: border-color var(--transition-fast), transform var(--transition-fast); }
+.home-page__cards a:hover { border-color: var(--color-horizon-black); transform: translateY(-0.125rem); }
+.home-page__cards strong { font-size: var(--font-size-xl); }
+.home-page__cards span { color: var(--color-text-muted); }
+@media (max-width: 38rem) { .home-page__cards { grid-template-columns: 1fr; } }

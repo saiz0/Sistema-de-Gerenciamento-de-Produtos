@@ -1,0 +1,3 @@
+.pagination-bar { display: flex; gap: var(--space-md); align-items: center; justify-content: space-between; color: var(--color-text-muted); }
+.pagination-bar__actions { display: flex; gap: var(--space-md); align-items: center; }
+@media (max-width: 40rem) { .pagination-bar { align-items: stretch; flex-direction: column; } .pagination-bar__actions { justify-content: space-between; } }

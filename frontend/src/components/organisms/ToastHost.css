@@ -1,0 +1,6 @@
+.toast-host { position: fixed; z-index: 70; inset-block-start: var(--space-md); inset-inline-end: var(--space-md); display: grid; gap: var(--space-sm); inline-size: min(calc(100% - 2rem), 25rem); }
+.toast-host__item { display: flex; gap: var(--space-md); align-items: start; justify-content: space-between; padding: var(--space-md); border-inline-start: 0.3rem solid; border-radius: var(--radius-sm); background: var(--color-surface-default); box-shadow: var(--shadow-md); }
+.toast-host__item--success { border-color: var(--color-success); }
+.toast-host__item--error { border-color: var(--color-danger); }
+.toast-host__item--info { border-color: var(--color-info); }
+.toast-host__item button { border: 0; background: transparent; color: inherit; font-size: var(--font-size-xl); line-height: 1; }

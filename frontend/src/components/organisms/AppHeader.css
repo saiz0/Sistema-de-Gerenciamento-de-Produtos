@@ -1,0 +1,8 @@
+.app-header { display: flex; gap: var(--space-lg); align-items: center; justify-content: space-between; min-block-size: var(--size-header); padding-inline: var(--space-page); background: var(--color-surface-inverse); color: var(--color-text-inverse); }
+.app-header__brand { display: grid; color: inherit; line-height: 1; text-decoration: none; }
+.app-header__brand-name { font-size: 1.2rem; font-weight: 900; letter-spacing: 0.12em; }
+.app-header__brand-subtitle { color: var(--color-action-primary); font-size: 0.55rem; font-weight: var(--font-weight-bold); letter-spacing: 0.28em; }
+.app-header nav { display: flex; gap: var(--space-sm); }
+.app-header nav a { padding: 0.6rem 0.8rem; border-radius: var(--radius-sm); text-decoration: none; }
+.app-header nav a:hover, .app-header nav a.router-link-active { background: var(--color-action-primary); color: var(--color-horizon-black); }
+@media (max-width: 34rem) { .app-header { align-items: stretch; flex-direction: column; padding-block: var(--space-md); } .app-header nav a { flex: 1; text-align: center; } }

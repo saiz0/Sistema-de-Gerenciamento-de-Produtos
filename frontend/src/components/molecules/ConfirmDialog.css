@@ -1,0 +1,4 @@
+.confirm-dialog { position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; padding: var(--space-md); background: var(--color-overlay); }
+.confirm-dialog__panel { display: grid; gap: var(--space-md); inline-size: min(100%, 32rem); padding: var(--space-lg); border-radius: var(--radius-md); background: var(--color-surface-default); box-shadow: var(--shadow-md); }
+.confirm-dialog__panel p { color: var(--color-text-muted); }
+.confirm-dialog__actions { display: flex; gap: var(--space-sm); justify-content: flex-end; margin-block-start: var(--space-sm); }

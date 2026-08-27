@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
+
+import AppHeader from './components/organisms/AppHeader.vue'
+import ToastHost from './components/organisms/ToastHost.vue'
 </script>
 
 <template>
   <div class="app-shell">
-    <header class="app-shell__header">
-      <RouterLink class="app-shell__brand" to="/">
-        <span class="app-shell__brand-mark" aria-hidden="true"></span>
-        <span>Sistema de Produtos</span>
-      </RouterLink>
-    </header>
+    <a class="app-shell__skip-link" href="#main-content">Pular para o conteúdo</a>
+    <AppHeader />
 
-    <main class="app-shell__content">
+    <main id="main-content" class="app-shell__content" tabindex="-1">
       <RouterView />
     </main>
+    <ToastHost />
   </div>
 </template>
 
