@@ -1,0 +1,457 @@
+openapi: 3.1.0
+info:
+  title: Sistema de Gerenciamento de Produtos API
+  version: 0.3.0
+  description: API para gerenciamento de empresas fornecedoras e produtos.
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Ambiente local
+tags:
+  - name: Empresas
+  - name: Produtos
+paths:
+  /companies:
+    get:
+      tags: [Empresas]
+      summary: Listar empresas
+      parameters:
+        - { name: name, in: query, schema: { type: string }, description: Parte do nome da empresa }
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/CompanyStatus' } }
+        - name: deleted
+          in: query
+          description: Sem excluídas, somente excluídas ou todas.
+          schema: { type: string, enum: [without, only, with], default: without }
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: per_page, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 15 } }
+      responses:
+        '200':
+          description: Lista paginada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CompanyListResponse' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    post:
+      tags: [Empresas]
+      summary: Cadastrar empresa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateCompany' }
+      responses:
+        '201':
+          description: Empresa criada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CompanyResponse' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /companies/{company}:
+    parameters:
+      - $ref: '#/components/parameters/CompanyId'
+    get:
+      tags: [Empresas]
+      summary: Consultar empresa
+      responses:
+        '200':
+          description: Empresa encontrada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CompanyResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Empresas]
+      summary: Atualizar empresa
+      description: O status é alterado somente pelos endpoints de ativação e inativação.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateCompany' }
+      responses:
+        '200':
+          description: Empresa atualizada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CompanyResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    delete:
+      tags: [Empresas]
+      summary: Excluir empresa logicamente
+      responses:
+        '200': { $ref: '#/components/responses/SuccessWithoutData' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /companies/{company}/activate:
+    parameters:
+      - $ref: '#/components/parameters/CompanyId'
+    patch:
+      tags: [Empresas]
+      summary: Ativar empresa
+      responses:
+        '200':
+          description: Empresa ativada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CompanyResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /companies/{company}/deactivate:
+    parameters:
+      - $ref: '#/components/parameters/CompanyId'
+    patch:
+      tags: [Empresas]
+      summary: Inativar empresa
+      description: Inativa também todos os produtos vinculados, inclusive os excluídos logicamente.
+      responses:
+        '200':
+          description: Empresa inativada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CompanyResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /companies/{company}/restore:
+    parameters:
+      - $ref: '#/components/parameters/CompanyId'
+    post:
+      tags: [Empresas]
+      summary: Restaurar empresa excluída logicamente
+      description: Restaura somente os produtos que foram excluídos junto com a empresa.
+      responses:
+        '200':
+          description: Empresa restaurada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CompanyResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /companies/{company}/force:
+    parameters:
+      - $ref: '#/components/parameters/CompanyId'
+    delete:
+      tags: [Empresas]
+      summary: Excluir empresa definitivamente
+      description: Exige exclusão lógica prévia e confirmação explícita.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [confirmed]
+              properties:
+                confirmed: { type: boolean, const: true }
+      responses:
+        '200': { $ref: '#/components/responses/SuccessWithoutData' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /products:
+    get:
+      tags: [Produtos]
+      summary: Listar produtos
+      parameters:
+        - { name: name, in: query, schema: { type: string, maxLength: 150 }, description: Parte do nome do produto }
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/ProductStatus' } }
+        - { name: company_id, in: query, schema: { type: integer, minimum: 1 }, description: Empresa vinculada }
+        - name: deleted
+          in: query
+          description: Sem excluídos, somente excluídos ou todos.
+          schema: { type: string, enum: [without, only, with], default: without }
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: per_page, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 15 } }
+      responses:
+        '200':
+          description: Lista paginada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductListResponse' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    post:
+      tags: [Produtos]
+      summary: Cadastrar produto
+      description: A empresa vinculada precisa estar ativa e não pode estar excluída.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateProduct' }
+      responses:
+        '201':
+          description: Produto criado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductResponse' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /products/{product}:
+    parameters:
+      - $ref: '#/components/parameters/ProductId'
+    get:
+      tags: [Produtos]
+      summary: Consultar produto
+      responses:
+        '200':
+          description: Produto encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Produtos]
+      summary: Atualizar produto
+      description: O status não é alterado. A empresa de destino precisa estar ativa e não pode estar excluída.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateProduct' }
+      responses:
+        '200':
+          description: Produto atualizado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    delete:
+      tags: [Produtos]
+      summary: Excluir produto logicamente
+      responses:
+        '200': { $ref: '#/components/responses/SuccessWithoutData' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /products/{product}/activate:
+    parameters:
+      - $ref: '#/components/parameters/ProductId'
+    patch:
+      tags: [Produtos]
+      summary: Ativar produto
+      description: A empresa vinculada precisa estar ativa e não pode estar excluída.
+      responses:
+        '200':
+          description: Produto ativado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /products/{product}/deactivate:
+    parameters:
+      - $ref: '#/components/parameters/ProductId'
+    patch:
+      tags: [Produtos]
+      summary: Inativar produto
+      responses:
+        '200':
+          description: Produto inativado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /products/{product}/restore:
+    parameters:
+      - $ref: '#/components/parameters/ProductId'
+    post:
+      tags: [Produtos]
+      summary: Restaurar produto excluído logicamente
+      description: Não permite restaurar enquanto a empresa vinculada estiver excluída.
+      responses:
+        '200':
+          description: Produto restaurado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /products/{product}/force:
+    parameters:
+      - $ref: '#/components/parameters/ProductId'
+    delete:
+      tags: [Produtos]
+      summary: Excluir produto definitivamente
+      description: Exige exclusão lógica prévia e confirmação explícita.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ForceDeleteConfirmation' }
+      responses:
+        '200': { $ref: '#/components/responses/SuccessWithoutData' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+components:
+  parameters:
+    CompanyId:
+      name: company
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+    ProductId:
+      name: product
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+  schemas:
+    CompanyStatus:
+      type: string
+      enum: [active, inactive]
+    CreateCompany:
+      type: object
+      required: [name, cnpj, email, phone]
+      properties:
+        name: { type: string, minLength: 3, maxLength: 150, example: Empresa Exemplo Ltda }
+        cnpj: { type: string, example: '11222333000181', description: Aceita valor com ou sem máscara. }
+        email: { type: string, format: email, maxLength: 254, example: contato@exemplo.com.br }
+        phone: { type: string, example: '71999999999', description: Telefone com DDD e 10 ou 11 dígitos. }
+        status: { $ref: '#/components/schemas/CompanyStatus' }
+    UpdateCompany:
+      allOf:
+        - $ref: '#/components/schemas/CreateCompany'
+        - type: object
+          properties:
+            status: false
+    Company:
+      type: object
+      required: [id, name, cnpj, email, phone, status, created_at, updated_at, deleted_at]
+      properties:
+        id: { type: integer, example: 1 }
+        name: { type: string, example: Empresa Exemplo Ltda }
+        cnpj: { type: string, example: '11222333000181' }
+        email: { type: string, format: email, example: contato@exemplo.com.br }
+        phone: { type: string, example: '71999999999' }
+        status: { $ref: '#/components/schemas/CompanyStatus' }
+        created_at: { type: [string, 'null'], format: date-time }
+        updated_at: { type: [string, 'null'], format: date-time }
+        deleted_at: { type: [string, 'null'], format: date-time }
+    CompanyResponse:
+      type: object
+      required: [success, message, data]
+      properties:
+        success: { type: boolean, const: true }
+        message: { type: string }
+        data: { $ref: '#/components/schemas/Company' }
+    CompanyListResponse:
+      type: object
+      required: [success, message, data, meta]
+      properties:
+        success: { type: boolean, const: true }
+        message: { type: string }
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Company' }
+        meta:
+          type: object
+          required: [current_page, per_page, total, last_page]
+          properties:
+            current_page: { type: integer }
+            per_page: { type: integer }
+            total: { type: integer }
+            last_page: { type: integer }
+    ProductStatus:
+      type: string
+      enum: [active, inactive]
+    CreateProduct:
+      type: object
+      required: [company_id, name, price, internal_code]
+      properties:
+        company_id: { type: integer, minimum: 1, example: 1 }
+        name: { type: string, minLength: 3, maxLength: 150, example: Teclado mecânico }
+        description: { type: [string, 'null'], maxLength: 2000, example: Teclado ABNT2 com switches marrons. }
+        price:
+          type: string
+          pattern: '^\d+(?:[\.,]\d{1,2})?$'
+          example: '249.90'
+          description: Valor maior que zero, com no máximo duas casas decimais. Aceita ponto ou vírgula.
+        internal_code: { type: string, maxLength: 100, example: TEC-001, description: 'Único dentro da empresa, inclusive entre produtos excluídos.' }
+        status: { $ref: '#/components/schemas/ProductStatus' }
+    UpdateProduct:
+      type: object
+      required: [company_id, name, price, internal_code]
+      properties:
+        company_id: { type: integer, minimum: 1, example: 1 }
+        name: { type: string, minLength: 3, maxLength: 150, example: Teclado mecânico atualizado }
+        description: { type: [string, 'null'], maxLength: 2000 }
+        price: { type: string, pattern: '^\d+(?:[\.,]\d{1,2})?$', example: '279.90' }
+        internal_code: { type: string, maxLength: 100, example: TEC-001 }
+    Product:
+      type: object
+      required: [id, company_id, name, description, price, internal_code, status, created_at, updated_at, deleted_at]
+      properties:
+        id: { type: integer, example: 1 }
+        company_id: { type: integer, example: 1 }
+        name: { type: string, example: Teclado mecânico }
+        description: { type: [string, 'null'], example: Teclado ABNT2 com switches marrons. }
+        price: { type: string, example: '249.90' }
+        internal_code: { type: string, example: TEC-001 }
+        status: { $ref: '#/components/schemas/ProductStatus' }
+        created_at: { type: [string, 'null'], format: date-time }
+        updated_at: { type: [string, 'null'], format: date-time }
+        deleted_at: { type: [string, 'null'], format: date-time }
+    ProductResponse:
+      type: object
+      required: [success, message, data]
+      properties:
+        success: { type: boolean, const: true }
+        message: { type: string }
+        data: { $ref: '#/components/schemas/Product' }
+    ProductListResponse:
+      type: object
+      required: [success, message, data, meta]
+      properties:
+        success: { type: boolean, const: true }
+        message: { type: string }
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Product' }
+        meta:
+          type: object
+          required: [current_page, per_page, total, last_page]
+          properties:
+            current_page: { type: integer }
+            per_page: { type: integer }
+            total: { type: integer }
+            last_page: { type: integer }
+    ForceDeleteConfirmation:
+      type: object
+      required: [confirmed]
+      properties:
+        confirmed: { type: boolean, const: true }
+    Error:
+      type: object
+      required: [success, message, code]
+      properties:
+        success: { type: boolean, const: false }
+        message: { type: string }
+        code: { type: string }
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }
+  responses:
+    SuccessWithoutData:
+      description: Operação concluída
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [success, message]
+            properties:
+              success: { type: boolean, const: true }
+              message: { type: string }
+    ValidationError:
+      description: Dados inválidos
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Registro não encontrado
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: Conflito com uma regra de negócio
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }

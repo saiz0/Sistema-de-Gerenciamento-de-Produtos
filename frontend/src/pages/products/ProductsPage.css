@@ -1,0 +1,14 @@
+.products-page { display: grid; gap: var(--space-lg); }
+.products-page__primary-link { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.625rem 1rem; border-radius: var(--radius-sm); background: var(--color-action-primary); color: var(--color-horizon-black); font-weight: var(--font-weight-bold); text-decoration: none; }
+.products-page__filters { display: grid; grid-template-columns: minmax(11rem, 2fr) repeat(3, minmax(9rem, 1fr)) auto; gap: var(--space-md); align-items: end; padding: var(--space-md); border-radius: var(--radius-md); background: var(--color-surface-default); box-shadow: var(--shadow-sm); }
+.products-page__filters label { display: grid; gap: var(--space-xs); font-weight: var(--font-weight-bold); }
+.products-page__table-wrap { overflow-x: auto; border: 0.0625rem solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-default); box-shadow: var(--shadow-sm); }
+table { inline-size: 100%; border-collapse: collapse; }
+th, td { padding: var(--space-md); border-block-end: 0.0625rem solid var(--color-border); text-align: start; vertical-align: top; }
+th { background: var(--color-surface-inverse); color: var(--color-text-inverse); font-size: var(--font-size-sm); letter-spacing: 0.04em; }
+td span, td strong { display: block; }
+td span { color: var(--color-text-muted); }
+.products-page__actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+.products-page__actions a { display: inline-flex; align-items: center; min-block-size: 2.75rem; padding: 0.625rem 1rem; border: 0.0625rem solid var(--color-border-strong); border-radius: var(--radius-sm); font-weight: var(--font-weight-bold); text-decoration: none; }
+@media (max-width: 68rem) { .products-page__filters { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 42rem) { .products-page__filters { grid-template-columns: 1fr; } .products-page__table-wrap { overflow: visible; border: 0; background: transparent; box-shadow: none; } table, tbody, tr, td { display: block; } thead { display: none; } tr { display: grid; gap: var(--space-sm); margin-block-end: var(--space-md); padding: var(--space-md); border: 0.0625rem solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-default); } td { display: grid; grid-template-columns: 6rem 1fr; padding: 0; border: 0; } td::before { content: attr(data-label); font-weight: var(--font-weight-bold); } .products-page__actions { grid-column: 1 / -1; } }

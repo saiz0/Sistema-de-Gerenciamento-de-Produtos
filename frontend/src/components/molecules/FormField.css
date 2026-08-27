@@ -1,0 +1,8 @@
+.form-field { display: grid; gap: var(--space-xs); }
+.form-field__label { font-weight: var(--font-weight-bold); }
+.form-field__label span { color: var(--color-danger); }
+.form-field__hint { color: var(--color-text-muted); font-size: var(--font-size-sm); }
+.form-field__error { color: var(--color-danger); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); }
+.form-field--invalid :deep(input),
+.form-field--invalid :deep(select),
+.form-field--invalid :deep(textarea) { border-color: var(--color-danger); }

@@ -1,0 +1,45 @@
+name: CI Frontend
+
+on:
+  push:
+    branches: [develop, main, 'feature/**']
+  pull_request:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontend-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Testes e validações
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v6
+
+      - name: Preparar variáveis de ambiente
+        run: cp .env.example .env
+
+      - name: Validar Docker Compose
+        run: docker compose --profile test config --quiet
+
+      - name: Executar tipagem, testes e build
+        run: docker build --file frontend/Dockerfile --target test --tag sistema-produtos-frontend-test:${{ github.sha }} frontend
+
+      - name: Construir imagem de produção
+        run: >-
+          docker build
+          --file frontend/Dockerfile
+          --target production
+          --build-arg VITE_API_BASE_URL=${FRONTEND_API_BASE_URL}
+          --tag sistema-produtos-frontend:${{ github.sha }}
+          frontend
+        env:
+          FRONTEND_API_BASE_URL: http://localhost:8000/api/v1

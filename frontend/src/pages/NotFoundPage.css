@@ -1,0 +1,4 @@
+.not-found-page { display: grid; gap: var(--space-md); justify-items: start; max-inline-size: var(--size-reading-max); }
+.not-found-page p { font-weight: var(--font-weight-bold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; }
+.not-found-page span { color: var(--color-text-muted); font-size: var(--font-size-lg); }
+.not-found-page a { display: inline-flex; min-block-size: 2.75rem; padding: 0.625rem 1rem; align-items: center; border-radius: var(--radius-sm); background: var(--color-action-primary); color: var(--color-horizon-black); font-weight: var(--font-weight-bold); text-decoration: none; }

@@ -1,0 +1,55 @@
+name: CI Backend
+
+on:
+  push:
+    branches: [develop, main, 'feature/**']
+  pull_request:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Testes e validações
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v6
+
+      - name: Preparar variáveis de ambiente
+        run: |
+          cp .env.example .env
+          cp backend/.env.example backend/.env
+
+      - name: Validar Docker Compose
+        run: docker compose --profile test config --quiet
+
+      - name: Validar contrato OpenAPI
+        run: >-
+          docker run --rm
+          --volume "${{ github.workspace }}/backend/docs:/spec"
+          redocly/cli:2.45.0
+          lint --extends=spec openapi.yaml
+
+      - name: Executar testes unitários e de integração
+        run: docker compose --profile test run --rm --build backend-test
+
+      - name: Construir imagem de produção
+        run: >-
+          docker build
+          --file backend/Dockerfile
+          --target production
+          --tag sistema-produtos-backend:${{ github.sha }}
+          backend
+
+      - name: Encerrar serviços temporários
+        if: always()
+        run: docker compose --profile test down --volumes --remove-orphans
