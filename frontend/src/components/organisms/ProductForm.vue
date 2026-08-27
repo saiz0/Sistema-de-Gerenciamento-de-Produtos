@@ -48,7 +48,7 @@ function submit(): void {
     name: form.name.trim(),
     description: form.description?.trim() || null,
     price: form.price.trim().replace(',', '.'),
-    internal_code: form.internal_code.trim(),
+    internal_code: form.internal_code.trim().toUpperCase(),
   })
 }
 </script>
