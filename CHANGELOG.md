@@ -21,6 +21,12 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Contrato OpenAPI 3.1 e serviço Swagger UI.
 - Testes unitários de domínio e casos de uso da feature de empresas.
 - Testes de integração da API utilizando o banco PostgreSQL isolado.
+- API REST completa para cadastro, consulta, listagem, alteração, ativação, inativação, exclusão lógica, restauração e exclusão definitiva de produtos.
+- Objetos de valor e validadores para preço e código interno de produtos.
+- Filtros de produtos por nome, status, empresa e situação de exclusão, com paginação.
+- Regras transacionais de inativação, exclusão e restauração em cascata entre empresas e produtos.
+- Testes unitários e de integração para produtos e para o ciclo de vida conjunto com empresas.
+- Mensagens de validação do Laravel em português do Brasil.
 
 ### Changed
 
@@ -32,6 +38,9 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Configuração do Docker centralizada no `.env` da raiz, sem credenciais ou endereços fixos no Compose e no PHPUnit.
 - Autoload PSR-4 configurado para as camadas da aplicação em `src/`.
 - Imagem PHP preparada com a extensão `mbstring` para validação segura de texto Unicode.
+- Contrato OpenAPI ampliado com todos os endpoints e schemas de produtos.
+- Unicidade de e-mail das empresas garantida inclusive entre registros excluídos logicamente.
+- Respostas inesperadas protegidas contra exposição de SQL, stack trace e detalhes internos.
 
 ### Removed
 

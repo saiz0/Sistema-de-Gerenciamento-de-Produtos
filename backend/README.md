@@ -133,20 +133,14 @@ Essa abordagem evita duplicar validações em controllers, services e casos de u
 ```text
 src/
 ├── Domain/
-│   └── Company/
-│       ├── Collections/
-│       ├── Entities/
-│       ├── Enums/
-│       ├── Repositories/
-│       └── ValueObjects/
+│   ├── Company/{Collections,Entities,Enums,Repositories,ValueObjects}/
+│   └── Product/{Collections,Entities,Enums,Repositories,ValueObjects}/
 ├── Application/
-│   └── Company/
-│       ├── DTOs/
-│       ├── Exceptions/
-│       ├── Services/
-│       └── UseCases/
+│   ├── Company/{DTOs,Exceptions,Services,UseCases}/
+│   ├── Product/{DTOs,Exceptions,Services,UseCases}/
+│   └── Shared/Contracts/
 ├── Infrastructure/
-│   ├── Persistence/Eloquent/
+│   ├── Persistence/{Eloquent,Transaction}/
 │   └── Providers/
 └── Presentation/
     └── Http/
@@ -158,3 +152,9 @@ src/
 ```
 
 Os namespaces dessas camadas são carregados via PSR-4 pelo Composer.
+
+## Contrato da API
+
+O contrato OpenAPI está versionado em `docs/openapi.yaml` e pode ser consultado pela interface Swagger UI disponível em `http://localhost:8081` no ambiente padrão.
+
+A documentação contém os endpoints de empresas e produtos, parâmetros de filtro, paginação, schemas de entrada e saída e respostas de validação, conflito e registro não encontrado.

@@ -102,6 +102,22 @@ Os testes unitários exercitam domínio e casos de uso sem banco de dados. Os te
 
 As respostas seguem um envelope JSON comum com `success`, `message` e, conforme o resultado, `data`, `meta`, `code` e `errors`.
 
+## API de produtos
+
+| Método | Endpoint | Operação |
+|---|---|---|
+| `GET` | `/api/v1/products` | Listar e filtrar produtos |
+| `POST` | `/api/v1/products` | Cadastrar produto |
+| `GET` | `/api/v1/products/{id}` | Consultar produto |
+| `PUT` | `/api/v1/products/{id}` | Atualizar dados do produto |
+| `PATCH` | `/api/v1/products/{id}/activate` | Ativar produto |
+| `PATCH` | `/api/v1/products/{id}/deactivate` | Inativar produto |
+| `DELETE` | `/api/v1/products/{id}` | Excluir logicamente |
+| `POST` | `/api/v1/products/{id}/restore` | Restaurar produto |
+| `DELETE` | `/api/v1/products/{id}/force` | Excluir definitivamente |
+
+A listagem aceita filtros por nome, status, empresa e situação de exclusão, além de paginação. Os corpos das requisições, exemplos de resposta e possíveis erros estão descritos no Swagger.
+
 ### Encerrar os serviços
 
 ```bash
