@@ -1,4 +1,39 @@
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:?NODE_IMAGE must be set}
+        NGINX_IMAGE: ${NGINX_IMAGE:?NGINX_IMAGE must be set}
+    ports:
+      - "${FRONTEND_PORT:?FRONTEND_PORT must be set}:5173"
+    environment:
+      VITE_API_BASE_URL: ${FRONTEND_API_BASE_URL:?FRONTEND_API_BASE_URL must be set}
+      VITE_USE_POLLING: ${FRONTEND_USE_POLLING:?FRONTEND_USE_POLLING must be set}
+      VITE_POLL_INTERVAL: ${FRONTEND_POLL_INTERVAL:?FRONTEND_POLL_INTERVAL must be set}
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+
+  frontend-test:
+    profiles: ["test"]
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: test
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:?NODE_IMAGE must be set}
+        NGINX_IMAGE: ${NGINX_IMAGE:?NGINX_IMAGE must be set}
+    environment:
+      VITE_API_BASE_URL: ${FRONTEND_API_BASE_URL:?FRONTEND_API_BASE_URL must be set}
+      VITE_USE_POLLING: ${FRONTEND_USE_POLLING:?FRONTEND_USE_POLLING must be set}
+      VITE_POLL_INTERVAL: ${FRONTEND_POLL_INTERVAL:?FRONTEND_POLL_INTERVAL must be set}
+    command: ["pnpm", "test"]
+
   swagger:
     image: ${SWAGGER_UI_IMAGE:?SWAGGER_UI_IMAGE must be set}
     ports:
@@ -91,4 +126,5 @@ volumes:
   backend-bootstrap-cache:
   backend-storage:
   backend-vendor:
+  frontend-node-modules:
   postgres-data:

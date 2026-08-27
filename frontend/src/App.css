@@ -1,0 +1,12 @@
+.app-shell {
+  min-block-size: 100vh;
+}
+
+.app-shell__content {
+  inline-size: min(100% - (2 * var(--space-page)), var(--size-content-max));
+  margin-inline: auto;
+  padding-block: var(--space-xl);
+}
+
+.app-shell__skip-link { position: fixed; z-index: 100; inset-block-start: var(--space-sm); inset-inline-start: var(--space-sm); padding: var(--space-sm) var(--space-md); transform: translateY(-200%); background: var(--color-action-primary); color: var(--color-horizon-black); font-weight: var(--font-weight-bold); }
+.app-shell__skip-link:focus { transform: translateY(0); }

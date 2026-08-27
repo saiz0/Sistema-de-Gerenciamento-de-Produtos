@@ -1,1 +1,21 @@
+# Environment
 .env
+.env.*
+!.env.example
+
+# Editors and local tools
+.codex/
+.cursor/
+.idea/
+.vscode/
+.zed/
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+tmp/

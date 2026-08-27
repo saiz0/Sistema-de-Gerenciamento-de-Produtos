@@ -1,0 +1,11 @@
+.feedback-state {
+  display: grid;
+  gap: var(--space-sm);
+  justify-items: start;
+  padding: var(--space-xl);
+  border: 0.0625rem dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-default);
+}
+.feedback-state p { color: var(--color-text-muted); }
+.feedback-state--error { border-color: var(--color-danger); background: var(--color-danger-soft); }

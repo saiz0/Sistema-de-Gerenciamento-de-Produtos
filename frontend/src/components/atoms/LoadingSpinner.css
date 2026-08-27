@@ -1,0 +1,19 @@
+.loading-spinner {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  justify-content: center;
+  min-block-size: 10rem;
+  color: var(--color-text-muted);
+}
+
+.loading-spinner__icon {
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border: 0.1875rem solid var(--color-border);
+  border-block-start-color: var(--color-horizon-black);
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
