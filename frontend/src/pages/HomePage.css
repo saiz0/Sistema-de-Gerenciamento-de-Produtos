@@ -1,0 +1,18 @@
+.home-page {
+  display: grid;
+  gap: var(--space-md);
+  max-inline-size: var(--size-reading-max);
+}
+
+.home-page__eyebrow {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.home-page__description {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+}

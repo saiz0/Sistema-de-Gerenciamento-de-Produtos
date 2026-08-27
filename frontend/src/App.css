@@ -1,0 +1,32 @@
+.app-shell {
+  min-block-size: 100vh;
+}
+
+.app-shell__header {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--size-header);
+  padding-inline: var(--space-page);
+  background: var(--color-surface-inverse);
+}
+
+.app-shell__brand {
+  display: inline-flex;
+  gap: var(--space-sm);
+  align-items: center;
+  color: var(--color-text-inverse);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+.app-shell__brand-mark {
+  inline-size: var(--space-md);
+  block-size: var(--space-md);
+  background: var(--color-action-primary);
+}
+
+.app-shell__content {
+  inline-size: min(100% - (2 * var(--space-page)), var(--size-content-max));
+  margin-inline: auto;
+  padding-block: var(--space-xl);
+}
