@@ -13,6 +13,17 @@ test('empresa excluída só oferece restauração e exclusão física quando nã
   assert.equal(companyActions(deleted, true).forceDelete, false)
 })
 
+test('empresa ativa oferece edição, inativação e exclusão lógica', () => {
+  assert.deepEqual(companyActions(company), { edit: true, activate: false, deactivate: true, remove: true, restore: false, forceDelete: false })
+})
+
+test('empresa inativa oferece reativação sem alterar produtos automaticamente', () => {
+  const actions = companyActions({ ...company, status: 'inactive' })
+  assert.equal(actions.activate, true)
+  assert.equal(actions.deactivate, false)
+  assert.equal(actions.edit, true)
+})
+
 test('somente empresa ativa e não excluída pode receber produtos', () => {
   assert.equal(canReceiveProducts(company), true)
   assert.equal(canReceiveProducts({ ...company, status: 'inactive' }), false)
@@ -24,4 +35,16 @@ test('produto não pode ser editado ou ativado quando a empresa está indisponí
   assert.equal(productActions(inactiveProduct, company).activate, true)
   assert.equal(productActions(inactiveProduct, { ...company, status: 'inactive' }).activate, false)
   assert.equal(productActions(product, { ...company, deleted_at: '2026-08-27T00:00:00Z' }).edit, false)
+})
+
+test('produto ativo oferece inativação e exclusão lógica', () => {
+  assert.deepEqual(productActions(product, company), { edit: true, activate: false, deactivate: true, remove: true, restore: false, forceDelete: false })
+})
+
+test('produto excluído só pode ser restaurado com empresa não excluída', () => {
+  const deletedProduct = { ...product, deleted_at: '2026-08-27T00:00:00Z' }
+  assert.equal(productActions(deletedProduct, company).restore, true)
+  assert.equal(productActions(deletedProduct, { ...company, status: 'inactive' }).restore, true)
+  assert.equal(productActions(deletedProduct, { ...company, deleted_at: '2026-08-27T00:00:00Z' }).restore, false)
+  assert.equal(productActions(deletedProduct, company).forceDelete, true)
 })
