@@ -71,6 +71,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 
 - Permissões de escrita em `storage` e `bootstrap/cache` durante a inicialização do container.
 - Execução do processo Laravel como usuário não privilegiado após a preparação dos diretórios.
+- Atualização automática do Vite em volumes Docker no Windows por meio de polling configurável.
 
 ## [0.1.0] - 2026-08-26
 

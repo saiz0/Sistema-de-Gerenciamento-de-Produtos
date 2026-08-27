@@ -11,6 +11,8 @@ services:
       - "${FRONTEND_PORT:?FRONTEND_PORT must be set}:5173"
     environment:
       VITE_API_BASE_URL: ${FRONTEND_API_BASE_URL:?FRONTEND_API_BASE_URL must be set}
+      VITE_USE_POLLING: ${FRONTEND_USE_POLLING:?FRONTEND_USE_POLLING must be set}
+      VITE_POLL_INTERVAL: ${FRONTEND_POLL_INTERVAL:?FRONTEND_POLL_INTERVAL must be set}
     depends_on:
       - backend
     volumes:
@@ -28,6 +30,8 @@ services:
         NGINX_IMAGE: ${NGINX_IMAGE:?NGINX_IMAGE must be set}
     environment:
       VITE_API_BASE_URL: ${FRONTEND_API_BASE_URL:?FRONTEND_API_BASE_URL must be set}
+      VITE_USE_POLLING: ${FRONTEND_USE_POLLING:?FRONTEND_USE_POLLING must be set}
+      VITE_POLL_INTERVAL: ${FRONTEND_POLL_INTERVAL:?FRONTEND_POLL_INTERVAL must be set}
     command: ["pnpm", "test"]
 
   swagger:
