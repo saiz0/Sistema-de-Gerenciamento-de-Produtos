@@ -129,11 +129,95 @@ O frontend possui testes unitários para validações e políticas de ações, a
 docker compose --profile test build frontend-test
 ```
 
-### Integração contínua
+## CI/CD e fluxo de entrega
 
-Os workflows `CI Backend` e `CI Frontend` são executados em pushes para branches de feature, `develop` e `main`, além de pull requests para `develop` e `main`. Eles validam o Docker Compose, contrato OpenAPI, tipagem, testes, builds e imagens de produção.
+O projeto utiliza GitHub Actions para integração contínua. Os pipelines verificam o mesmo ambiente Docker usado no desenvolvimento e não dependem de PHP, Composer, Node.js, pnpm ou PostgreSQL instalados diretamente no runner.
 
-O workflow utiliza somente os arquivos `.env.example`. Nenhuma credencial do ambiente local ou segredo de produção é necessário para executar os testes.
+### Fluxo de branches
+
+```text
+feature/* → pull request para develop → integração e homologação
+develop   → pull request de release para main → versão estável
+main      → base para releases e implantação em produção
+```
+
+- Cada funcionalidade é desenvolvida em uma branch `feature/*` criada a partir de `develop`.
+- O pull request para `develop` só deve ser integrado depois que os dois pipelines estiverem aprovados.
+- Quando o conjunto de funcionalidades estiver pronto, uma release é promovida de `develop` para `main` por pull request.
+- Correções feitas durante a revisão devem entrar na branch de origem, mantendo `develop` e `main` protegidas contra trabalho incompleto.
+
+### Gatilhos
+
+Os workflows são executados nos seguintes eventos:
+
+| Evento | Branches | Finalidade |
+|---|---|---|
+| `push` | `feature/**`, `develop` e `main` | Validar cada atualização enviada ao repositório |
+| `pull_request` | destino `develop` ou `main` | Impedir a integração de alterações inválidas |
+| `workflow_dispatch` | execução manual | Permitir uma nova validação pela interface do GitHub |
+
+Execuções anteriores da mesma branch são canceladas quando um commit mais recente é enviado. Isso evita consumo desnecessário de recursos e garante que o resultado exibido corresponda ao código mais atual.
+
+### Pipeline do backend
+
+O workflow [CI Backend](.github/workflows/backend-ci.yml) executa:
+
+1. Checkout do código.
+2. Criação dos arquivos locais a partir de `.env.example`.
+3. Validação estrutural do Docker Compose com o perfil de testes.
+4. Validação do contrato `backend/docs/openapi.yaml` com Redocly.
+5. Testes unitários e de integração no serviço `backend-test`.
+6. Uso do PostgreSQL temporário `postgres-test`, sem acessar o banco de desenvolvimento.
+7. Construção do estágio `production` da imagem do backend.
+8. Remoção dos containers e volumes temporários, inclusive quando alguma etapa falha.
+
+### Pipeline do frontend
+
+O workflow [CI Frontend](.github/workflows/frontend-ci.yml) executa:
+
+1. Checkout do código e preparação do `.env`.
+2. Validação estrutural do Docker Compose.
+3. Verificação de tipos com `vue-tsc`.
+4. Testes unitários das validações e políticas de interface.
+5. Testes de integração do cliente HTTP.
+6. Build da aplicação com Vite.
+7. Construção do estágio `production`, que entrega os arquivos estáticos pelo Nginx.
+
+### Isolamento e segurança
+
+- Os testes do backend utilizam credenciais exclusivas definidas pelas variáveis `TEST_DB_*`.
+- O banco de testes usa `tmpfs` e é descartado ao encerrar o job.
+- Os workflows utilizam somente valores de exemplo; credenciais reais não são versionadas.
+- A permissão do token do GitHub está limitada à leitura do conteúdo do repositório.
+- As imagens recebem o SHA do commit como identificação dentro do runner, facilitando a rastreabilidade da validação.
+
+### Reprodução local
+
+As principais etapas do CI podem ser executadas localmente com os mesmos containers:
+
+```bash
+# Backend: testes unitários e de integração com PostgreSQL isolado
+docker compose --profile test run --rm --build backend-test
+
+# Frontend: tipagem, testes e build no estágio de validação
+docker compose --profile test build frontend-test
+
+# Imagens equivalentes às verificadas pelos pipelines
+docker build --file backend/Dockerfile --target production --tag sistema-produtos-backend:local backend
+docker build --file frontend/Dockerfile --target production --build-arg VITE_API_BASE_URL=http://localhost:8000/api/v1 --tag sistema-produtos-frontend:local frontend
+```
+
+### Estado atual do CD
+
+Os pipelines constroem e validam as imagens de produção, mas ainda não as publicam em um registry e não realizam implantação automática. Portanto, o projeto possui CI completo e está preparado para a próxima etapa de entrega contínua, sem afirmar que existe um deploy que ainda não foi configurado.
+
+Para habilitar CD posteriormente, o fluxo recomendado é:
+
+1. Criar as imagens somente após aprovação do CI na `main` ou publicação de uma tag de versão.
+2. Autenticar no registry por secrets do GitHub Actions.
+3. Publicar imagens imutáveis identificadas pela versão e pelo SHA do commit.
+4. Promover exatamente essas imagens para o ambiente de produção.
+5. Configurar environment protection e aprovação manual antes do deploy, quando necessário.
 
 ## Interface
 
