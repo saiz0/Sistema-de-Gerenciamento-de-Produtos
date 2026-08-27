@@ -26,7 +26,7 @@ final readonly class UpdateCompany
         $cnpj = new Cnpj($data->cnpj);
         $email = new EmailAddress($data->email);
 
-        $this->ensureUnique->handle($cnpj, $id);
+        $this->ensureUnique->handle($cnpj, $email, $id);
 
         $company->update($data->name, $cnpj, $email, new PhoneNumber($data->phone));
 

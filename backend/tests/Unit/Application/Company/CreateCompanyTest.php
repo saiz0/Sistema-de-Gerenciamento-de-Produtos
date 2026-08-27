@@ -36,6 +36,22 @@ final class CreateCompanyTest extends TestCase
         $useCase->execute($this->data('outro@exemplo.com'));
     }
 
+    public function test_rejects_an_email_already_used_by_another_company(): void
+    {
+        $repository = new InMemoryCompanyRepository;
+        $useCase = new CreateCompany($repository, new EnsureCompanyIsUnique($repository));
+        $useCase->execute($this->data());
+
+        $this->expectException(CompanyConflict::class);
+        $useCase->execute(new CreateCompanyData(
+            'Outra Empresa',
+            '11444777000161',
+            'CONTATO@EXEMPLO.COM',
+            '71988888888',
+            CompanyStatus::Active,
+        ));
+    }
+
     private function data(string $email = 'contato@exemplo.com'): CreateCompanyData
     {
         return new CreateCompanyData(

@@ -59,4 +59,30 @@ final class ProductTest extends TestCase
             new InternalCode('PROD-001'),
         );
     }
+
+    public function test_rejects_an_invalid_name(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Product::create(
+            1,
+            'AB',
+            null,
+            new Price('1.00'),
+            new InternalCode('PROD-001'),
+        );
+    }
+
+    public function test_rejects_a_description_longer_than_two_thousand_characters(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Product::create(
+            1,
+            'Produto Exemplo',
+            str_repeat('a', 2001),
+            new Price('1.00'),
+            new InternalCode('PROD-001'),
+        );
+    }
 }

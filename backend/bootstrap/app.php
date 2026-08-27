@@ -8,9 +8,11 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Validation\ValidationException;
 use Presentation\Http\Responses\ApiMessages;
 use Presentation\Http\Responses\ApiResponse;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -53,6 +55,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'PRODUCT_CONFLICT',
             409,
         ));
+        $exceptions->render(fn (UniqueConstraintViolationException $exception) => ApiResponse::error(
+            ApiMessages::CONFLICT,
+            'CONFLICT',
+            409,
+        ));
         $exceptions->render(fn (\InvalidArgumentException $exception) => ApiResponse::error(
             $exception->getMessage(),
             'INVALID_ARGUMENT',
@@ -62,5 +69,15 @@ return Application::configure(basePath: dirname(__DIR__))
             ApiMessages::NOT_FOUND,
             'ROUTE_NOT_FOUND',
             404,
+        ));
+        $exceptions->render(fn (HttpExceptionInterface $exception) => ApiResponse::error(
+            $exception->getStatusCode() === 405 ? ApiMessages::METHOD_NOT_ALLOWED : ApiMessages::CONFLICT,
+            'HTTP_ERROR',
+            $exception->getStatusCode(),
+        ));
+        $exceptions->render(fn (\Throwable $exception) => ApiResponse::error(
+            ApiMessages::INTERNAL_ERROR,
+            'INTERNAL_ERROR',
+            500,
         ));
     })->create();

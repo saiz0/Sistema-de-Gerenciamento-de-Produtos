@@ -24,7 +24,7 @@ final readonly class CreateCompany
         $cnpj = new Cnpj($data->cnpj);
         $email = new EmailAddress($data->email);
 
-        $this->ensureUnique->handle($cnpj);
+        $this->ensureUnique->handle($cnpj, $email);
 
         return $this->companies->save(Company::create(
             name: $data->name,

@@ -9,6 +9,7 @@ use Domain\Company\Entities\Company;
 use Domain\Company\Enums\CompanyStatus;
 use Domain\Company\Enums\DeletedFilter;
 use Domain\Company\ValueObjects\Cnpj;
+use Domain\Company\ValueObjects\EmailAddress;
 
 interface CompanyRepository
 {
@@ -25,6 +26,8 @@ interface CompanyRepository
     ): CompanyPage;
 
     public function existsByCnpj(Cnpj $cnpj, ?int $ignoreId = null): bool;
+
+    public function existsByEmail(EmailAddress $email, ?int $ignoreId = null): bool;
 
     public function softDelete(int $id): void;
 
