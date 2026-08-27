@@ -2,6 +2,8 @@
 
 use Application\Company\Exceptions\CompanyConflict;
 use Application\Company\Exceptions\CompanyNotFound;
+use Application\Product\Exceptions\ProductConflict;
+use Application\Product\Exceptions\ProductNotFound;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -39,6 +41,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(fn (CompanyConflict $exception) => ApiResponse::error(
             $exception->getMessage(),
             'COMPANY_CONFLICT',
+            409,
+        ));
+        $exceptions->render(fn (ProductNotFound $exception) => ApiResponse::error(
+            $exception->getMessage(),
+            'PRODUCT_NOT_FOUND',
+            404,
+        ));
+        $exceptions->render(fn (ProductConflict $exception) => ApiResponse::error(
+            $exception->getMessage(),
+            'PRODUCT_CONFLICT',
             409,
         ));
         $exceptions->render(fn (\InvalidArgumentException $exception) => ApiResponse::error(
