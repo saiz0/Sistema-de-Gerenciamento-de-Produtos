@@ -5,8 +5,9 @@ const props = defineProps<{ status: Status; deleted?: boolean }>()
 </script>
 
 <template>
-  <span class="status-badge" :class="`status-badge--${props.deleted ? 'deleted' : status}`">
-    {{ props.deleted ? 'Excluído' : status === 'active' ? 'Ativo' : 'Inativo' }}
+  <span class="status-badges">
+    <span class="status-badge" :class="`status-badge--${status}`">{{ status === 'active' ? 'Ativo' : 'Inativo' }}</span>
+    <span v-if="props.deleted" class="status-badge status-badge--deleted">Excluído</span>
   </span>
 </template>
 
